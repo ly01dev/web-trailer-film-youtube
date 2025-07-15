@@ -15,6 +15,7 @@ const notFound = (req, res, next) => {
   console.log(`⚠️  404 Not Found: ${req.method} ${req.originalUrl}`);
   console.log(`   IP: ${req.ip}`);
   console.log(`   User-Agent: ${req.get('User-Agent')}`);
+  console.log(`   Headers:`, req.headers);
   
   // Tạo lỗi 404 với thông tin chi tiết
   const error = new Error(`Không tìm thấy - ${req.originalUrl}`);

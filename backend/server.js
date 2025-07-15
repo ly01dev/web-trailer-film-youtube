@@ -38,78 +38,47 @@ connectDB(); // Kết nối MongoDB
 
 /**
  * Helmet: Thêm HTTP headers bảo mật
- * Bảo vệ khỏi XSS, clickjacking, MIME sniffing, etc.
+ * Tạm thời tắt để debug
  */
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'"],
-      fontSrc: ["'self'"],
-      objectSrc: ["'none'"],
-      mediaSrc: ["'self'"],
-      frameSrc: ["'none'"],
-    },
-  },
-  crossOriginEmbedderPolicy: false,
-}));
+// app.use(helmet({
+//   contentSecurityPolicy: {
+//     directives: {
+//       defaultSrc: ["'self'"],
+//       styleSrc: ["'self'", "'unsafe-inline'"],
+//       scriptSrc: ["'self'"],
+//       imgSrc: ["'self'", "data:", "https:"],
+//       connectSrc: ["'self'"],
+//       fontSrc: ["'self'"],
+//       objectSrc: ["'none'"],
+//       mediaSrc: ["'self'"],
+//       frameSrc: ["'none'"],
+//     },
+//   },
+//   crossOriginEmbedderPolicy: false,
+// }));
 
 /**
  * Rate Limiting: Giới hạn số request từ mỗi IP
  * Chỉ áp dụng trong production để tránh spam và DDoS
+ * Tạm thời tắt để debug
  */
-if (process.env.NODE_ENV === 'production') {
-  const limiter = rateLimit({
-    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 phút
-    max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100, // 100 request/15 phút
-    message: {
-      error: 'Quá nhiều request từ IP này, vui lòng thử lại sau.'
-    }
-  });
-  app.use('/api/', limiter);
-}
+// if (process.env.NODE_ENV === 'production') {
+//   const limiter = rateLimit({
+//     windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 phút
+//     max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100, // 100 request/15 phút
+//     message: {
+//       error: 'Quá nhiều request từ IP này, vui lòng thử lại sau.'
+//     }
+//   });
+//   app.use('/api/', limiter);
+// }
 
 /**
  * CORS: Cho phép frontend truy cập API từ domain khác
- * Cấu hình origin, credentials, methods, headers
+ * Tạm thời cho phép tất cả origins để debug
  */
 app.use(cors({
-  origin: function (origin, callback) {
-    // Cho phép requests không có origin (mobile apps, Postman)
-    if (!origin) return callback(null, true);
-    
-    // Lấy danh sách domain được phép từ environment
-    const corsOrigin = process.env.CORS_ORIGIN;
-    let allowedOrigins = [];
-    
-    if (corsOrigin) {
-      allowedOrigins = corsOrigin.split(',').map(origin => origin.trim());
-    } else {
-      // Fallback cho development
-      allowedOrigins = [
-        'http://localhost:5173', // Vite dev server
-        'http://localhost:5174', // Vite dev server thay thế
-        'http://localhost:3000', // Create React App
-        'http://localhost:3001', // Create React App thay thế
-        'http://localhost:5000', // Backend
-        'http://localhost:5001', // Backend thay thế
-        'http://localhost:5002'  // Backend thay thế
-      ];
-    }
-    
-    // Kiểm tra origin có được phép không
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('CORS blocked origin:', origin);
-      }
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: true, // Cho phép tất cả origins
   credentials: true, // Cho phép gửi cookies (cần cho authentication)
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
@@ -162,6 +131,20 @@ app.get('/health', (req, res) => {
  * Định nghĩa các routes API chính
  * Mỗi route có prefix riêng để tổ chức code
  */
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
+// Test route để debug
+app.get('/api/test', (req, res) => {
+  res.status(200).json({ message: 'API test route works!' });
+});
+
+// Simple test route
+app.get('/simple', (req, res) => {
+  res.status(200).json({ message: 'Simple route works!' });
+});
+
 app.use('/api/auth', authRoutes);    // /api/auth/ (đăng ký, đăng nhập, etc.)
 app.use('/api/movies', movieRoutes); // /api/movies/ (quản lý phim)
 
