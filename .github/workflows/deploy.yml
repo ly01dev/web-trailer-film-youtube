@@ -1,0 +1,69 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.AWS_SSH_KEY }}
+
+      - name: Add EC2 to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }} << 'EOF'
+            echo "🚀 Starting deployment..."
+            
+            # Navigate to project directory
+            cd web-trailer-film-youtube
+            
+            # Pull latest code
+            echo "📥 Pulling latest code..."
+            git pull origin main
+            
+            # Stop containers
+            echo "🐳 Stopping containers..."
+            docker-compose down
+            
+            # Rebuild and start containers
+            echo "🔨 Rebuilding containers..."
+            docker-compose up -d --build
+            
+            # Wait for containers to be healthy
+            echo "⏳ Waiting for containers to be ready..."
+            sleep 30
+            
+            # Check container status
+            echo "📊 Container status:"
+            docker-compose ps
+            
+            echo "✅ Deployment completed!"
+            echo "🌐 Website: https://film8x.xyz"
+          EOF
+
+      - name: Health check
+        run: |
+          echo "🏥 Performing health check..."
+          sleep 10
+          curl -f https://film8x.xyz || echo "⚠️ Frontend health check failed"
+          curl -f https://film8x.xyz/api/health || echo "⚠️ Backend health check failed"
+
+      - name: Deployment status
+        run: |
+          echo "🎉 Deployment workflow completed!"
+          echo "🌐 Check your website at: https://film8x.xyz"
