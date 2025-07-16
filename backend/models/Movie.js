@@ -112,6 +112,11 @@ const movieSchema = new mongoose.Schema({
     enum: ['active', 'pending', 'rejected'],
     default: 'pending'
   },
+  statusReason: {
+    type: String,
+    trim: true,
+    maxlength: [500, 'Status reason cannot exceed 500 characters']
+  },
   isFeatured: {
     type: Boolean,
     default: false

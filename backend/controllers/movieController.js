@@ -859,20 +859,20 @@ const updateMovieStatus = async (req, res) => {
       });
     }
 
+    // Lưu trạng thái cũ trước khi cập nhật
+    const oldStatus = movie.status;
+
     // Cập nhật status và reason
     movie.status = status;
     if (reason) {
       movie.statusReason = reason;
     }
 
-    // Thêm vào edit history
+    // Thêm vào edit history với cấu trúc đúng theo schema
     movie.editHistory.push({
-      action: 'status_change',
-      oldValue: movie.status,
-      newValue: status,
-      reason: reason,
-      changedBy: req.user.id,
-      changedAt: new Date()
+      editedBy: req.user.id,
+      editedAt: new Date(),
+      changes: `Trạng thái thay đổi từ "${oldStatus}" thành "${status}"${reason ? ` - Lý do: ${reason}` : ''}`
     });
 
     await movie.save();

@@ -41,7 +41,7 @@ router.post('/:id/rate', protect, rateMovie);       // Đánh giá phim
 router.post('/:id/like', likeMovie);               // Like phim
 
 // ===== ADMIN ROUTES =====
-router.put('/:id/status', protect, updateMovieStatus);       // Duyệt/từ chối clip (admin)
+router.put('/:id/status', protect, admin, updateMovieStatus);       // Duyệt/từ chối clip (admin)
 
 // ===== ADMIN/MODERATOR ROUTES =====
 router.post('/', protect, moderator, createMovie);      // Tạo phim (moderator+)
