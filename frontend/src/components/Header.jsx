@@ -96,7 +96,7 @@ const Header = () => {
     }}>
       <div className="container">
         {/* Logo - Link về trang chính */}
-        <Link className="navbar-brand fw-bold text-white" to="/movies" style={{
+        <Link className="navbar-brand fw-bold text-white" to="/" style={{
           transition: 'all 0.3s ease',
           textDecoration: 'none'
         }} onMouseEnter={(e) => {
@@ -134,7 +134,7 @@ const Header = () => {
             <li className="nav-item">
               <Link 
                 className="nav-link text-white" 
-                to="/movies"
+                to="/"
                 style={{
                   transition: 'all 0.3s ease',
                   borderRadius: '8px',

@@ -43,7 +43,15 @@ const Movies = () => {
   useEffect(() => {
     const categoryFromURL = searchParams.get('category');
     
-    if (categoryFromURL) {
+    // Reset tất cả filters khi về trang chủ (không có category)
+    if (!categoryFromURL) {
+      setMovieFilters({
+        search: '',
+        category: '',
+        status: 'active'
+      });
+      setSearchInput('');
+    } else {
       setMovieFilters(prev => ({
         ...prev,
         category: categoryFromURL
