@@ -88,62 +88,66 @@ const LoginPopup = () => {
          style={{ 
            zIndex: 9999, 
            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-           backdropFilter: 'blur(5px)'
+           backdropFilter: 'blur(5px)',
+           animation: 'fadeIn 0.3s ease-out'
          }}>
       {/* Popup card */}
       <div className="card border-0 shadow-lg" style={{
-        maxWidth: '400px',
+        maxWidth: '320px',
         width: '90%',
-        borderRadius: '20px',
+        borderRadius: '16px',
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white'
+        color: 'white',
+        animation: 'slideIn 0.4s ease-out',
+        transform: 'scale(0.9)',
+        opacity: 0,
+        animationFillMode: 'forwards'
       }}>
-        <div className="card-body p-4 text-center">
+        <div className="card-body p-3 text-center">
           {/* Close button */}
           <button
             onClick={handleClosePopup}
-            className="btn-close btn-close-white position-absolute top-0 end-0 m-3"
-            style={{ zIndex: 1 }}
+            className="btn-close btn-close-white position-absolute top-0 end-0 m-2"
+            style={{ zIndex: 1, fontSize: '0.8rem' }}
             aria-label="Close"
           ></button>
 
           {/* Icon */}
-          <div className="mb-4">
-            <i className="bi bi-person-circle" style={{ fontSize: '4rem', color: 'rgba(255,255,255,0.8)' }}></i>
+          <div className="mb-3">
+            <i className="bi bi-person-circle" style={{ fontSize: '3rem', color: 'rgba(255,255,255,0.8)' }}></i>
           </div>
 
           {/* Title */}
-          <h4 className="fw-bold mb-3">Chào mừng bạn!</h4>
+          <h5 className="fw-bold mb-2">Chào mừng bạn!</h5>
 
           {/* Message */}
-          <p className="mb-4" style={{ fontSize: '1.1rem', lineHeight: '1.6' }}>
-            Đăng nhập để trải nghiệm đầy đủ tính năng của MovieTube. 
-            Xem phim không giới hạn và quyền được bình luận phim của bạn!
+          <p className="mb-3" style={{ fontSize: '0.95rem', lineHeight: '1.5' }}>
+            Đăng nhập để trải nghiệm đầy đủ tính năng của Film8X
           </p>
 
           {/* Benefits list */}
-          <div className="mb-4">
-            <div className="d-flex align-items-center mb-2">
-              <i className="bi bi-check-circle-fill me-3" style={{ color: '#28a745' }}></i>
-              <span>Xem phim chất lượng cao</span>
+          <div className="mb-3">
+            <div className="d-flex align-items-center mb-1">
+              <i className="bi bi-check-circle-fill me-2" style={{ color: '#28a745', fontSize: '0.9rem' }}></i>
+              <span style={{ fontSize: '0.85rem' }}>Xem phim chất lượng cao</span>
             </div>
-            <div className="d-flex align-items-center mb-2">
-              <i className="bi bi-check-circle-fill me-3" style={{ color: '#28a745' }}></i>
-              <span>Bình luận phim yêu thích</span>
+            <div className="d-flex align-items-center mb-1">
+              <i className="bi bi-check-circle-fill me-2" style={{ color: '#28a745', fontSize: '0.9rem' }}></i>
+              <span style={{ fontSize: '0.85rem' }}>Bình luận phim yêu thích</span>
             </div>
             <div className="d-flex align-items-center">
-              <i className="bi bi-check-circle-fill me-3" style={{ color: '#28a745' }}></i>
-              <span>Không quảng cáo</span>
+              <i className="bi bi-check-circle-fill me-2" style={{ color: '#28a745', fontSize: '0.9rem' }}></i>
+              <span style={{ fontSize: '0.85rem' }}>Không quảng cáo</span>
             </div>
           </div>
 
           {/* Action buttons */}
-          <div className="d-grid gap-3">
+          <div className="d-grid gap-2">
             {/* Login button */}
             <Link 
               to="/login" 
-              className="btn btn-light btn-lg fw-bold"
-              style={{ borderRadius: '12px' }}
+              className="btn btn-light fw-bold"
+              style={{ borderRadius: '10px', fontSize: '0.9rem' }}
               onClick={handleClosePopup}
             >
               <i className="bi bi-box-arrow-in-right me-2"></i>
@@ -153,8 +157,8 @@ const LoginPopup = () => {
             {/* Register button */}
             <Link 
               to="/register" 
-              className="btn btn-outline-light btn-lg"
-              style={{ borderRadius: '12px' }}
+              className="btn btn-outline-light"
+              style={{ borderRadius: '10px', fontSize: '0.9rem' }}
               onClick={handleClosePopup}
             >
               <i className="bi bi-person-plus me-2"></i>
@@ -165,8 +169,8 @@ const LoginPopup = () => {
           {/* Skip button */}
           <button
             onClick={handleClosePopup}
-            className="btn btn-link text-white text-decoration-none mt-3"
-            style={{ fontSize: '0.9rem' }}
+            className="btn btn-link text-white text-decoration-none mt-2"
+            style={{ fontSize: '0.8rem' }}
           >
             <i className="bi bi-clock me-1"></i>
             Để sau (30s nữa sẽ hiện lại)
