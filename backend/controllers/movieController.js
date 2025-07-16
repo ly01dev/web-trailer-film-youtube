@@ -562,7 +562,7 @@ const getMyUploads = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const status = req.query.status || 'all';
 
-    // Xây dựng query filter
+    // Xây dựng query filter cho danh sách phim
     let query = { uploadedBy: req.user.id };
     if (status !== 'all') {
       query.status = status;
@@ -575,10 +575,10 @@ const getMyUploads = async (req, res) => {
       .limit(limit)
       .skip((page - 1) * limit);
 
-    // Đếm tổng số phim
+    // Đếm tổng số phim theo filter hiện tại
     const total = await Movie.countDocuments(query);
 
-    // Tính toán statistics
+    // Tính toán statistics TỔNG QUÁT (không phụ thuộc vào filter)
     const totalActive = await Movie.countDocuments({ 
       uploadedBy: req.user.id, 
       status: 'active' 
@@ -591,6 +591,9 @@ const getMyUploads = async (req, res) => {
       uploadedBy: req.user.id, 
       status: 'rejected' 
     });
+    
+    // Tổng số upload thực tế (tổng của tất cả status)
+    const totalUploads = totalActive + totalPending + totalRejected;
 
     res.json({
       success: true,
@@ -605,7 +608,7 @@ const getMyUploads = async (req, res) => {
         totalActive,
         totalPending,
         totalRejected,
-        total: total
+        total: totalUploads  // Tổng số upload thực tế
       }
     });
   } catch (error) {
@@ -794,13 +797,16 @@ const getAllMoviesForAdmin = async (req, res) => {
       .limit(limit)
       .skip((page - 1) * limit);
 
-    // Đếm tổng số phim
+    // Đếm tổng số phim theo filter hiện tại
     const total = await Movie.countDocuments(query);
 
-    // Tính toán statistics
+    // Tính toán statistics TỔNG QUÁT (không phụ thuộc vào filter)
     const totalActive = await Movie.countDocuments({ status: 'active' });
     const totalPending = await Movie.countDocuments({ status: 'pending' });
     const totalRejected = await Movie.countDocuments({ status: 'rejected' });
+    
+    // Tổng số phim thực tế (tổng của tất cả status)
+    const totalMovies = totalActive + totalPending + totalRejected;
 
     // Tính tổng số trang
     const totalPages = Math.ceil(total / limit);
@@ -818,7 +824,7 @@ const getAllMoviesForAdmin = async (req, res) => {
         totalActive,
         totalPending,
         totalRejected,
-        total: total
+        total: totalMovies  // Tổng số phim thực tế
       }
     });
   } catch (error) {
