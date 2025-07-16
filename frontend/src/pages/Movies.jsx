@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { getAllMoviesPublic } from '../services/movieService';
-import { getCategoryLabel } from '../utils/categoryMapping';
+import { getCategoryLabel, categoryList } from '../utils/categoryMapping';
 
 /**
  * Component Movies - Trang hiển thị danh sách phim chính
@@ -30,6 +30,9 @@ const Movies = () => {
     status: 'active'
   });
 
+  // State riêng cho search input để tránh reload liên tục
+  const [searchInput, setSearchInput] = useState('');
+
   // Số phim hiển thị mỗi trang - giống Facebook
   const ITEMS_PER_PAGE = 8;
 
@@ -47,6 +50,7 @@ const Movies = () => {
         category: categoryFromURL || '',
         search: searchFromURL || ''
       }));
+      setSearchInput(searchFromURL || '');
     }
   }, [searchParams]);
 
@@ -88,14 +92,14 @@ const Movies = () => {
   }, [movieFilters]);
 
   /**
-   * Effect: Load phim ban đầu và tự động search khi filter thay đổi
+   * Effect: Load phim ban đầu và tự động search khi category hoặc search thay đổi
    */
   useEffect(() => {
     setCurrentPage(1);
     setHasMore(true);
     setMovies([]);
     loadMovies(1, false);
-  }, [movieFilters]);
+  }, [movieFilters.category, movieFilters.status, movieFilters.search]);
 
   /**
    * Function: Load thêm phim khi scroll
@@ -126,9 +130,13 @@ const Movies = () => {
    * Cập nhật URL parameters và reload danh sách phim
    */
   const handleSearch = () => {
+    // Cập nhật movieFilters với search input hiện tại
+    const newFilters = { ...movieFilters, search: searchInput };
+    setMovieFilters(newFilters);
+    
     // Cập nhật URL parameters để có thể bookmark/share
     const newSearchParams = new URLSearchParams();
-    if (movieFilters.search) newSearchParams.set('search', movieFilters.search);
+    if (searchInput) newSearchParams.set('search', searchInput);
     if (movieFilters.category) newSearchParams.set('category', movieFilters.category);
     setSearchParams(newSearchParams);
     
@@ -228,8 +236,8 @@ const Movies = () => {
                 type="text"
                 className="form-control"
                 placeholder="Tìm kiếm theo tên..."
-                value={movieFilters.search}
-                onChange={(e) => setMovieFilters({...movieFilters, search: e.target.value})}
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
               />
             </div>
             {/* Category filter dropdown */}
@@ -246,14 +254,11 @@ const Movies = () => {
                 onChange={(e) => setMovieFilters({...movieFilters, category: e.target.value})}
               >
                 <option value="" style={{ fontSize: '14px' }}>Tất cả thể loại</option>
-                <option value="action" style={{ fontSize: '14px' }}>Action</option>
-                <option value="comedy" style={{ fontSize: '14px' }}>Comedy</option>
-                <option value="drama" style={{ fontSize: '14px' }}>Drama</option>
-                <option value="horror" style={{ fontSize: '14px' }}>Horror</option>
-                <option value="romance" style={{ fontSize: '14px' }}>Romance</option>
-                <option value="sci-fi" style={{ fontSize: '14px' }}>Sci-Fi</option>
-                <option value="thriller" style={{ fontSize: '14px' }}>Thriller</option>
-                <option value="documentary" style={{ fontSize: '14px' }}>Documentary</option>
+                {categoryList.map(category => (
+                  <option key={category.name} value={category.name} style={{ fontSize: '14px' }}>
+                    {category.label}
+                  </option>
+                ))}
               </select>
             </div>
             {/* Search button */}
