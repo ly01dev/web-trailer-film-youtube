@@ -75,14 +75,22 @@ connectDB(); // Kết nối MongoDB
 
 /**
  * CORS: Cho phép frontend truy cập API từ domain khác
- * Tạm thời cho phép tất cả origins để debug
+ * Cấu hình cho production với HTTPS
  */
-app.use(cors({
-  origin: true, // Cho phép tất cả origins
+const corsOptions = {
+  origin: [
+    'https://film8x.xyz',
+    'https://www.film8x.xyz',
+    'http://localhost:3000', // Development
+    'http://localhost:5173'  // Vite dev server
+  ],
   credentials: true, // Cho phép gửi cookies (cần cho authentication)
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-}));
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Forwarded-For', 'X-Forwarded-Proto'],
+  optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
 
 // ===== MIDDLEWARE XỬ LÝ DỮ LIỆU =====
 

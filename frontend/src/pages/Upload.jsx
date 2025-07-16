@@ -174,10 +174,10 @@ const Upload = () => {
           <div className="text-center mb-4">
             <h1 className="h2 mb-3">
               <i className="bi bi-youtube text-danger me-2"></i>
-              Đăng tải Video từ YouTube
+              Đăng Tải Phim Mới
             </h1>
             <p className="text-muted">
-              Chia sẻ video YouTube yêu thích với cộng đồng MovieTube
+              Chia sẻ phim hay từ YouTube với cộng đồng Film8X
             </p>
           </div>
 

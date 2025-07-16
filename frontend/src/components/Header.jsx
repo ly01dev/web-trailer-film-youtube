@@ -106,7 +106,7 @@ const Header = () => {
           e.target.style.textShadow = 'none';
         }}>
           <i className="bi bi-film me-2"></i>
-          MovieTube
+          Film8X
         </Link>
 
         {/* Mobile menu toggle button */}

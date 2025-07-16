@@ -200,10 +200,10 @@ const Movies = () => {
             <div>
               <h1 className="h2 mb-2">
                 <i className="bi bi-collection-play text-primary me-2"></i>
-                Danh sách Phim
+                Kho Phim Hay Nhất 2025
               </h1>
               <p className="text-muted mb-0">
-                Khám phá {movies.length} video chất lượng
+                Khám phá {movies.length} bộ phim chất lượng cao
               </p>
             </div>
             {/* Upload button - chỉ hiển thị cho admin */}
