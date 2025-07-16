@@ -133,6 +133,7 @@ const Upload = () => {
         slug: formData.slug,
         description: formData.description,
         youtubeUrl: formData.youtubeUrl,
+        youtubeId: videoId, // Thêm youtubeId
         category: formData.category,
         tags: formData.tags,
         duration: videoInfo?.duration || '0:00',
