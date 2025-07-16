@@ -55,6 +55,13 @@ const Movies = () => {
   }, [searchParams]);
 
   /**
+   * Effect: Load phim ban đầu khi component mount
+   */
+  useEffect(() => {
+    loadMovies(1, false);
+  }, []);
+
+  /**
    * Function: Load phim từ API với pagination
    * @param {number} page - Trang hiện tại
    * @param {boolean} append - Có thêm vào danh sách cũ không
@@ -68,8 +75,14 @@ const Movies = () => {
         setLoadingMore(true);
       }
       
+      // Tạo filters object với search input hiện tại
+      const currentFilters = {
+        ...movieFilters,
+        search: movieFilters.search || searchInput
+      };
+      
       // Gọi API lấy danh sách phim
-      const response = await getAllMoviesPublic(page, ITEMS_PER_PAGE, movieFilters);
+      const response = await getAllMoviesPublic(page, ITEMS_PER_PAGE, currentFilters);
       const newMovies = response.data || [];
       const totalPages = response.pagination?.totalPages || 1;
       
@@ -89,17 +102,17 @@ const Movies = () => {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, [movieFilters]);
+  }, [movieFilters, searchInput]);
 
   /**
-   * Effect: Load phim ban đầu và tự động search khi category hoặc search thay đổi
+   * Effect: Load phim ban đầu và tự động search khi category thay đổi
    */
   useEffect(() => {
     setCurrentPage(1);
     setHasMore(true);
     setMovies([]);
     loadMovies(1, false);
-  }, [movieFilters.category, movieFilters.status, movieFilters.search]);
+  }, [movieFilters.category, movieFilters.status]);
 
   /**
    * Function: Load thêm phim khi scroll
