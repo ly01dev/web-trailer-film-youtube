@@ -28,11 +28,14 @@ ssh -i "$KEY_PATH" -o StrictHostKeyChecking=no "$EC2_USER@$EC2_IP" << 'EOF'
     echo "🔍 Checking current database status..."
     docker-compose exec mongodb mongosh --username admin --password password123 --authenticationDatabase admin phim-youtube --eval "db.movies.countDocuments()" --quiet
     
+    echo "📁 Checking if movies.json exists in backend directory..."
+    ls -la backend/movies.json
+    
     echo "📥 Importing movies data..."
-    docker-compose exec backend node import-movies.js
+    docker-compose exec backend node backend/import-movies.js
     
     echo "👤 Creating admin user..."
-    docker-compose exec backend node create-test-user.js
+    docker-compose exec backend node backend/create-test-user.js
     
     echo "✅ Data import completed!"
     echo "📊 Final database status:"

@@ -7,11 +7,11 @@ const Movie = require('./models/Movie');
 
 async function importMovies() {
   try {
-    // Connect to MongoDB using environment variable
-    const mongoUri = process.env.MONGODB_URI || 'mongodb://admin:password123@mongodb:27017/phim-youtube?authSource=admin';
-    console.log('🔗 Connecting to MongoDB...');
+    // Connect to MongoDB Atlas using environment variable
+    const mongoUri = process.env.MONGODB_URI || 'mongodb+srv://lyhuuthanhtv:OyJgFuu02T4Ewi8O@cluster0.sgv9a1t.mongodb.net/web-phim-youtube?retryWrites=true&w=majority';
+    console.log('🔗 Connecting to MongoDB Atlas...');
     await mongoose.connect(mongoUri);
-    console.log('✅ Connected to MongoDB');
+    console.log('✅ Connected to MongoDB Atlas');
     
     // Read movies data from JSON file
     console.log('📖 Reading movies.json...');
@@ -41,7 +41,7 @@ async function importMovies() {
     console.log(`🎬 Active movies: ${activeCount}`);
     
     await mongoose.disconnect();
-    console.log('🔌 Disconnected from MongoDB');
+    console.log('🔌 Disconnected from MongoDB Atlas');
     
   } catch (error) {
     console.error('❌ Error importing movies:', error.message);

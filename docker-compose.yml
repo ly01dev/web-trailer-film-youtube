@@ -1,28 +1,6 @@
 version: '3.8'
 
 services:
-  # MongoDB Database
-  mongodb:
-    image: mongo:6.0
-    container_name: phim-youtube-mongodb
-    restart: unless-stopped
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password123
-      MONGO_INITDB_DATABASE: phim-youtube
-    volumes:
-      - mongodb_data:/data/db
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    ports:
-      - "27017:27017"
-    networks:
-      - phim-youtube-network
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
   # Backend API
   backend:
     build:
@@ -33,16 +11,14 @@ services:
     environment:
       NODE_ENV: production
       PORT: 5000
-      MONGODB_URI: mongodb://admin:password123@mongodb:27017/phim-youtube?authSource=admin
+      MONGODB_URI: mongodb+srv://lyhuuthanhtv:OyJgFuu02T4Ewi8O@cluster0.sgv9a1t.mongodb.net/web-phim-youtube?retryWrites=true&w=majority
       JWT_SECRET: your-super-secret-jwt-key-change-this-in-production
       CORS_ORIGIN: https://film8x.xyz,https://www.film8x.xyz
     volumes:
       - backend_uploads:/app/uploads
+      - ./backend/movies.json:/app/movies.json
     ports:
       - "5000:5000"
-    depends_on:
-      mongodb:
-        condition: service_healthy
     networks:
       - phim-youtube-network
     healthcheck:
@@ -72,8 +48,6 @@ services:
       retries: 3
 
 volumes:
-  mongodb_data:
-    driver: local
   backend_uploads:
     driver: local
 
