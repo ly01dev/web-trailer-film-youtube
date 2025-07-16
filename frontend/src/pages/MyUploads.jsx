@@ -92,7 +92,7 @@ const MyUploads = () => {
             <div className="col-md-4">
               <div className="card bg-primary text-white">
                 <div className="card-body text-center">
-                  <h3 className="card-title">{statistics.totalUploads || 0}</h3>
+                  <h3 className="card-title">{statistics.total || 0}</h3>
                   <p className="card-text">Tổng số upload</p>
                 </div>
               </div>
@@ -100,7 +100,7 @@ const MyUploads = () => {
             <div className="col-md-4">
               <div className="card bg-warning text-white">
                 <div className="card-body text-center">
-                  <h3 className="card-title">{statistics.pendingUploads || 0}</h3>
+                  <h3 className="card-title">{statistics.totalPending || 0}</h3>
                   <p className="card-text">Chờ duyệt</p>
                 </div>
               </div>
@@ -108,7 +108,7 @@ const MyUploads = () => {
             <div className="col-md-4">
               <div className="card bg-success text-white">
                 <div className="card-body text-center">
-                  <h3 className="card-title">{statistics.approvedUploads || 0}</h3>
+                  <h3 className="card-title">{statistics.totalActive || 0}</h3>
                   <p className="card-text">Đã duyệt</p>
                 </div>
               </div>
