@@ -16,6 +16,11 @@ backend/dist/
 .env.test.local
 .env.production.local
 
+# Security and sensitive files
+FILM8X-QUICK-REFERENCE.md
+aws-key.pem
+*.pem
+
 # IDE files
 .vscode/
 .idea/
