@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { getAllMoviesPublic } from '../services/movieService';
 import { getCategoryLabel, categoryList } from '../utils/categoryMapping';
@@ -12,6 +12,7 @@ const Movies = () => {
   // Lấy thông tin user và authentication từ context
   const { user, isAuthenticated } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
   
   // Kiểm tra quyền upload - chỉ admin mới được upload
   const canUpload = user?.role === 'admin';
@@ -51,6 +52,11 @@ const Movies = () => {
         status: 'active'
       });
       setSearchInput('');
+      // Force reload movies khi reset về trang chủ
+      setCurrentPage(1);
+      setHasMore(true);
+      setMovies([]);
+      loadMovies(1, false);
     } else {
       setMovieFilters(prev => ({
         ...prev,
@@ -65,6 +71,25 @@ const Movies = () => {
   useEffect(() => {
     loadMovies(1, false);
   }, []);
+
+  /**
+   * Effect: Reset state khi navigate về trang chủ (pathname = "/")
+   */
+  useEffect(() => {
+    if (location.pathname === "/" && !searchParams.get('category')) {
+      // Reset hoàn toàn khi về trang chủ
+      setMovieFilters({
+        search: '',
+        category: '',
+        status: 'active'
+      });
+      setSearchInput('');
+      setCurrentPage(1);
+      setHasMore(true);
+      setMovies([]);
+      loadMovies(1, false);
+    }
+  }, [location.pathname, searchParams]);
 
   /**
    * Function: Load phim từ API với pagination
