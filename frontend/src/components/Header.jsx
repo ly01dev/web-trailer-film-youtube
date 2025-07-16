@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { getAllMoviesPublic } from '../services/movieService';
 
+
 /**
  * Component Header - Navigation bar chính của ứng dụng
  * Bao gồm: Logo, menu navigation, dropdown categories, user menu
@@ -19,16 +20,16 @@ const Header = () => {
    * Danh sách categories cố định với icon và màu sắc
    * Được sử dụng khi API không hoạt động
    */
-  const categoryList = [
-    { name: 'Action', icon: 'bi-lightning', color: '#dc3545' },
-    { name: 'Comedy', icon: 'bi-emoji-laughing', color: '#ffc107' },
-    { name: 'Drama', icon: 'bi-theater-masks', color: '#6f42c1' },
-    { name: 'Horror', icon: 'bi-ghost', color: '#212529' },
-    { name: 'Romance', icon: 'bi-heart', color: '#e83e8c' },
-    { name: 'Sci-Fi', icon: 'bi-rocket', color: '#17a2b8' },
-    { name: 'Animation', icon: 'bi-palette', color: '#fd7e14' },
-    { name: 'Documentary', icon: 'bi-camera-video', color: '#28a745' },
-    { name: 'Other', icon: 'bi-three-dots', color: '#6c757d' }
+  const fallbackCategoryList = [
+    { name: 'action', label: 'Hành động', icon: 'bi-lightning', color: '#dc3545' },
+    { name: 'comedy', label: 'Hài hước', icon: 'bi-emoji-laughing', color: '#ffc107' },
+    { name: 'drama', label: 'Tâm lý', icon: 'bi-theater-masks', color: '#6f42c1' },
+    { name: 'horror', label: 'Kinh dị', icon: 'bi-ghost', color: '#212529' },
+    { name: 'romance', label: 'Tình cảm', icon: 'bi-heart', color: '#e83e8c' },
+    { name: 'sci-fi', label: 'Khoa học viễn tưởng', icon: 'bi-rocket', color: '#17a2b8' },
+    { name: 'animation', label: 'Hoạt hình', icon: 'bi-palette', color: '#fd7e14' },
+    { name: 'documentary', label: 'Tài liệu', icon: 'bi-camera-video', color: '#28a745' },
+    { name: 'other', label: 'Khác', icon: 'bi-three-dots', color: '#6c757d' }
   ];
   
   /**
@@ -41,7 +42,7 @@ const Header = () => {
       try {
         // Gọi API cho từng category để đếm số phim
         const categoryCounts = await Promise.all(
-          categoryList.map(async (category) => {
+          fallbackCategoryList.map(async (category) => {
             try {
               const response = await getAllMoviesPublic(1, 1, { category: category.name });
               return {
@@ -66,7 +67,7 @@ const Header = () => {
       } catch (error) {
         console.error('Error fetching category counts:', error);
         // Fallback: sử dụng danh sách cố định nếu có lỗi
-        setCategories(categoryList.map(cat => ({
+        setCategories(fallbackCategoryList.map(cat => ({
           ...cat,
           count: 0,
           slug: cat.name.toLowerCase().replace(/\s+/g, '-')
@@ -236,13 +237,13 @@ const Header = () => {
                           e.target.style.backgroundColor = 'transparent';
                         }}
                       >
-                        {category.name}
+                        {category.label || category.name}
                       </Link>
                     </li>
                   ))
                 ) : (
                   // Fallback: hiển thị danh sách cố định nếu không load được
-                  categoryList.map((category) => (
+                  fallbackCategoryList.map((category) => (
                     <li key={category.name}>
                       <Link 
                         className="dropdown-item" 
@@ -264,7 +265,7 @@ const Header = () => {
                           e.target.style.backgroundColor = 'transparent';
                         }}
                       >
-                        {category.name}
+                        {category.label || category.name}
                       </Link>
                     </li>
                   ))

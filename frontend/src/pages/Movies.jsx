@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { getAllMoviesPublic } from '../services/movieService';
+import { getCategoryLabel } from '../utils/categoryMapping';
 
 /**
  * Component Movies - Trang hiển thị danh sách phim chính
@@ -287,7 +288,7 @@ const Movies = () => {
             onClick={() => handleCategoryChange('action')}
           >
             <i className="bi bi-lightning me-1"></i>
-            Action
+            Hành động
           </button>
           
           {/* Comedy */}
@@ -296,7 +297,7 @@ const Movies = () => {
             onClick={() => handleCategoryChange('comedy')}
           >
             <i className="bi bi-emoji-laughing me-1"></i>
-            Comedy
+            Hài hước
           </button>
           
           {/* Drama */}
@@ -304,8 +305,8 @@ const Movies = () => {
             className={`btn btn-sm ${movieFilters.category === 'drama' ? 'btn-primary' : 'btn-outline-primary'}`}
             onClick={() => handleCategoryChange('drama')}
           >
-            <i className="bi bi-film me-1"></i>
-            Drama
+            <i className="bi bi-theater-masks me-1"></i>
+            Tâm lý
           </button>
           
           {/* Horror */}
@@ -314,7 +315,7 @@ const Movies = () => {
             onClick={() => handleCategoryChange('horror')}
           >
             <i className="bi bi-ghost me-1"></i>
-            Horror
+            Kinh dị
           </button>
           
           {/* Romance */}
@@ -323,7 +324,7 @@ const Movies = () => {
             onClick={() => handleCategoryChange('romance')}
           >
             <i className="bi bi-heart-fill me-1"></i>
-            Romance
+            Tình cảm
           </button>
           
           {/* Sci-Fi */}
@@ -331,8 +332,8 @@ const Movies = () => {
             className={`btn btn-sm ${movieFilters.category === 'sci-fi' ? 'btn-primary' : 'btn-outline-primary'}`}
             onClick={() => handleCategoryChange('sci-fi')}
           >
-            <i className="bi bi-stars me-1"></i>
-            Sci-Fi
+            <i className="bi bi-rocket me-1"></i>
+            Khoa học viễn tưởng
           </button>
           
           {/* Thriller */}
@@ -341,7 +342,7 @@ const Movies = () => {
             onClick={() => handleCategoryChange('thriller')}
           >
             <i className="bi bi-exclamation-triangle me-1"></i>
-            Thriller
+            Giật gân
           </button>
           
           {/* Documentary */}
@@ -350,7 +351,7 @@ const Movies = () => {
             onClick={() => handleCategoryChange('documentary')}
           >
             <i className="bi bi-camera-video me-1"></i>
-            Documentary
+            Tài liệu
           </button>
         </div>
       </div>
@@ -404,7 +405,7 @@ const Movies = () => {
                   {/* Category badge */}
                   <div className="position-absolute bottom-0 start-0 m-2">
                     <span className="badge bg-primary">
-                      {movie.category || 'Khác'}
+                      {getCategoryLabel(movie.category)}
                     </span>
                   </div>
                 </div>

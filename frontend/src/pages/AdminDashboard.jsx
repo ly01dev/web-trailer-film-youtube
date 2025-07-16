@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { getAllUsers, updateUserRole, deleteUser } from '../services/authService';
 import { getPendingMovies, updateMovieStatus, getAllMoviesForAdmin, deleteMovie } from '../services/movieService';
+import { getCategoryLabel, categoryList } from '../utils/categoryMapping';
 
 const AdminDashboard = () => {
   const { user, isAuthenticated } = useAuth();
@@ -426,7 +427,7 @@ const AdminDashboard = () => {
                             </p>
                             
                             <div className="d-flex justify-content-between align-items-center mb-2">
-                              <span className="badge bg-secondary">{movie.category}</span>
+                              <span className="badge bg-secondary">{getCategoryLabel(movie.category)}</span>
                               <span className="badge bg-warning">Chờ duyệt</span>
                             </div>
 
@@ -526,14 +527,11 @@ const AdminDashboard = () => {
                         onChange={(e) => setMovieFilters({...movieFilters, category: e.target.value})}
                       >
                         <option value="">Tất cả thể loại</option>
-                        <option value="action">Action</option>
-                        <option value="comedy">Comedy</option>
-                        <option value="drama">Drama</option>
-                        <option value="horror">Horror</option>
-                        <option value="romance">Romance</option>
-                        <option value="sci-fi">Sci-Fi</option>
-                        <option value="thriller">Thriller</option>
-                        <option value="documentary">Documentary</option>
+                        {categoryList.map(category => (
+                          <option key={category.name} value={category.name}>
+                            {category.label}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <div className="col-md-2">
@@ -626,7 +624,7 @@ const AdminDashboard = () => {
                               </div>
                             </td>
                             <td>
-                              <span className="badge bg-secondary">{movie.category}</span>
+                              <span className="badge bg-secondary">{getCategoryLabel(movie.category)}</span>
                             </td>
                             <td>
                               <span className={`badge ${

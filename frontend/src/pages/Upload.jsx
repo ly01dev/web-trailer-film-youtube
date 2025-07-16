@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { createMovie } from '../services/movieService';
+import { categoryList } from '../utils/categoryMapping';
 
 const Upload = () => {
   const { user, isAuthenticated } = useAuth();
@@ -414,14 +415,11 @@ const Upload = () => {
                         required
                       >
                         <option value="">Chọn thể loại...</option>
-                        <option value="Action">Hành động</option>
-                        <option value="Romance">Tình cảm</option>
-                        <option value="Comedy">Hài hước</option>
-                        <option value="Horror">Kinh dị</option>
-                        <option value="Sci-Fi">Viễn tưởng</option>
-                        <option value="Animation">Hoạt hình</option>
-                        <option value="Documentary">Tài liệu</option>
-                        <option value="Other">Khác</option>
+                        {categoryList.map(category => (
+                          <option key={category.name} value={category.name}>
+                            {category.label}
+                          </option>
+                        ))}
                       </select>
                     </div>
 

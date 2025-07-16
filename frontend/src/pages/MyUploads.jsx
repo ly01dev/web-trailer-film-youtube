@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { getMyUploads } from '../services/movieService';
+import { getCategoryLabel } from '../utils/categoryMapping';
 
 const MyUploads = () => {
   const { user, isAuthenticated } = useAuth();
@@ -161,7 +162,7 @@ const MyUploads = () => {
                         </p>
                         
                         <div className="d-flex justify-content-between align-items-center mb-2">
-                          <span className="badge bg-secondary">{movie.category}</span>
+                          <span className="badge bg-secondary">{getCategoryLabel(movie.category)}</span>
                           <span className={`badge ${
                             movie.status === 'active' ? 'bg-success' : 
                             movie.status === 'pending' ? 'bg-warning' : 'bg-danger'

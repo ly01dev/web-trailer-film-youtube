@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { getMovieById, updateMovie } from '../services/movieService';
+import { categoryList } from '../utils/categoryMapping';
 
 const EditMovie = () => {
   const { id } = useParams();
@@ -290,14 +291,11 @@ const EditMovie = () => {
                     required
                   >
                     <option value="">Chọn thể loại</option>
-                    <option value="Action">Action</option>
-                    <option value="Romance">Romance</option>
-                    <option value="Comedy">Comedy</option>
-                    <option value="Horror">Horror</option>
-                    <option value="Sci-Fi">Sci-Fi</option>
-                    <option value="Animation">Animation</option>
-                    <option value="Documentary">Documentary</option>
-                    <option value="Other">Other</option>
+                    {categoryList.map(category => (
+                      <option key={category.name} value={category.name}>
+                        {category.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
