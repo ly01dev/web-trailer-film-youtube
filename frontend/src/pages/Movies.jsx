@@ -3,6 +3,7 @@ import { Link, useSearchParams, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { getAllMoviesPublic } from '../services/movieService';
 import { getCategoryLabel, categoryList } from '../utils/categoryMapping';
+import SEOHead from '../components/SEOHead';
 
 /**
  * Component Movies - Trang hiển thị danh sách phim chính
@@ -237,7 +238,13 @@ const Movies = () => {
   }
 
   return (
-    <div className="container py-4">
+    <>
+      <SEOHead 
+        title="Film8X - Kho Phim Hay Nhất 2025 | Xem Phim Online HD"
+        description="Khám phá kho phim khổng lồ với hàng nghìn bộ phim chất lượng cao. Xem phim online HD miễn phí, không quảng cáo. Cập nhật phim mới nhất 2025."
+        url="https://film8x.xyz"
+      />
+      <div className="container py-4">
       {/* Header section */}
       <div className="row mb-4">
         <div className="col-12">
@@ -547,6 +554,7 @@ const Movies = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 
