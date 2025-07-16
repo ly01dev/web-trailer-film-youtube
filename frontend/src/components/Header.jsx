@@ -96,19 +96,26 @@ const Header = () => {
     }}>
       <div className="container">
         {/* Logo - Link về trang chính */}
-        <Link className="navbar-brand fw-bold text-white" to="/" style={{
-          transition: 'all 0.3s ease',
-          textDecoration: 'none'
-        }} onMouseEnter={(e) => {
-          e.target.style.transform = 'scale(1.05)';
-          e.target.style.textShadow = '0 0 10px rgba(255,255,255,0.5)';
-        }} onMouseLeave={(e) => {
-          e.target.style.transform = 'scale(1)';
-          e.target.style.textShadow = 'none';
-        }}>
+        <a 
+          className="navbar-brand fw-bold text-white" 
+          href="/"
+          style={{
+            transition: 'all 0.3s ease',
+            textDecoration: 'none',
+            cursor: 'pointer'
+          }} 
+          onMouseEnter={(e) => {
+            e.target.style.transform = 'scale(1.05)';
+            e.target.style.textShadow = '0 0 10px rgba(255,255,255,0.5)';
+          }} 
+          onMouseLeave={(e) => {
+            e.target.style.transform = 'scale(1)';
+            e.target.style.textShadow = 'none';
+          }}
+        >
           <i className="bi bi-film me-2"></i>
           Film8X
-        </Link>
+        </a>
 
         {/* Mobile menu toggle button */}
         <button
@@ -132,14 +139,15 @@ const Header = () => {
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             {/* Link Phim */}
             <li className="nav-item">
-              <Link 
+              <a 
                 className="nav-link text-white" 
-                to="/"
+                href="/"
                 style={{
                   transition: 'all 0.3s ease',
                   borderRadius: '8px',
                   margin: '0 5px',
-                  padding: '8px 12px'
+                  padding: '8px 12px',
+                  cursor: 'pointer'
                 }}
                 onMouseEnter={(e) => {
                   if (window.innerWidth > 768) { // Chỉ hover trên desktop
@@ -158,7 +166,7 @@ const Header = () => {
               >
                 <i className="bi bi-collection-play me-1"></i>
                 Phim
-              </Link>
+              </a>
             </li>
             
             {/* Dropdown Thể loại */}
