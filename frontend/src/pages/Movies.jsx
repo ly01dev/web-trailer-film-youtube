@@ -38,19 +38,16 @@ const Movies = () => {
 
   /**
    * Effect: Đọc URL parameters khi component mount
-   * Cho phép bookmark và share URL với filter
+   * Chỉ lưu category vào URL, không lưu search input
    */
   useEffect(() => {
     const categoryFromURL = searchParams.get('category');
-    const searchFromURL = searchParams.get('search');
     
-    if (categoryFromURL || searchFromURL) {
+    if (categoryFromURL) {
       setMovieFilters(prev => ({
         ...prev,
-        category: categoryFromURL || '',
-        search: searchFromURL || ''
+        category: categoryFromURL
       }));
-      setSearchInput(searchFromURL || '');
     }
   }, [searchParams]);
 
@@ -140,18 +137,12 @@ const Movies = () => {
 
   /**
    * Function: Xử lý tìm kiếm
-   * Cập nhật URL parameters và reload danh sách phim
+   * Chỉ cập nhật movieFilters, không lưu vào URL
    */
   const handleSearch = () => {
     // Cập nhật movieFilters với search input hiện tại
     const newFilters = { ...movieFilters, search: searchInput };
     setMovieFilters(newFilters);
-    
-    // Cập nhật URL parameters để có thể bookmark/share
-    const newSearchParams = new URLSearchParams();
-    if (searchInput) newSearchParams.set('search', searchInput);
-    if (movieFilters.category) newSearchParams.set('category', movieFilters.category);
-    setSearchParams(newSearchParams);
     
     // Reset pagination và reload
     setCurrentPage(1);
@@ -168,9 +159,8 @@ const Movies = () => {
     const newFilters = { ...movieFilters, category };
     setMovieFilters(newFilters);
     
-    // Cập nhật URL parameters
+    // Cập nhật URL parameters chỉ cho category
     const newSearchParams = new URLSearchParams();
-    if (newFilters.search) newSearchParams.set('search', newFilters.search);
     if (category) newSearchParams.set('category', category);
     setSearchParams(newSearchParams);
   };
