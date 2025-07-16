@@ -19,8 +19,13 @@ const EditMovie = () => {
     tags: '',
     year: '',
     director: '',
-    cast: ''
+    cast: '',
+    youtubeUrl: '',
+    useYoutubeThumbnail: true
   });
+  
+  const [thumbnail, setThumbnail] = useState(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState(null);
 
   useEffect(() => {
     const loadMovie = async () => {
@@ -38,8 +43,15 @@ const EditMovie = () => {
           tags: movieData.tags ? movieData.tags.join(', ') : '',
           year: movieData.year || '',
           director: movieData.director || '',
-          cast: movieData.cast ? movieData.cast.join(', ') : ''
+          cast: movieData.cast ? movieData.cast.join(', ') : '',
+          youtubeUrl: movieData.youtubeUrl || '',
+          useYoutubeThumbnail: !movieData.thumbnail || movieData.thumbnail.includes('youtube.com')
         });
+        
+        // Set thumbnail preview
+        if (movieData.thumbnail) {
+          setThumbnailPreview(movieData.thumbnail);
+        }
         
         setLoading(false);
       } catch (error) {
@@ -69,11 +81,32 @@ const EditMovie = () => {
   }
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
+  };
+
+  const handleThumbnailChange = (e) => {
+    const selectedThumbnail = e.target.files[0];
+    if (selectedThumbnail) {
+      // Kiểm tra loại file
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+      if (!allowedTypes.includes(selectedThumbnail.type)) {
+        alert('Chỉ chấp nhận file ảnh (JPG, PNG, GIF)');
+        return;
+      }
+      
+      setThumbnail(selectedThumbnail);
+      
+      // Tạo preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setThumbnailPreview(e.target.result);
+      };
+      reader.readAsDataURL(selectedThumbnail);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -101,17 +134,31 @@ const EditMovie = () => {
         ...formData,
         tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()) : [],
         cast: formData.cast ? formData.cast.split(',').map(actor => actor.trim()) : [],
-        year: formData.year ? parseInt(formData.year) : undefined
+        year: formData.year ? parseInt(formData.year) : undefined,
+        status: 'pending' // Sau khi chỉnh sửa, status = pending để admin duyệt lại
       };
 
-      console.log('Updating movie with data:', updateData);
-      const response = await updateMovie(id, updateData);
+      // Nếu có thumbnail mới, thêm vào FormData
+      let response;
+      if (thumbnail) {
+        const formDataToSend = new FormData();
+        Object.keys(updateData).forEach(key => {
+          formDataToSend.append(key, updateData[key]);
+        });
+        formDataToSend.append('thumbnail', thumbnail);
+        
+        console.log('Updating movie with FormData including thumbnail');
+        response = await updateMovie(id, formDataToSend);
+      } else {
+        console.log('Updating movie with data:', updateData);
+        response = await updateMovie(id, updateData);
+      }
       console.log('Movie updated:', response);
       console.log('Response data:', response.data);
       console.log('Updated movie slug:', response.data?.slug);
       
       setSaving(false);
-      alert('Cập nhật phim thành công!');
+      alert('Cập nhật phim thành công! Clip đã được chuyển về trạng thái "Chờ duyệt" để admin xem xét.');
       
       // Redirect về slug mới từ response, không thì về ID
       const updatedMovie = response.data;
@@ -306,7 +353,7 @@ const EditMovie = () => {
                 </div>
 
                 {/* Cast */}
-                <div className="mb-4">
+                <div className="mb-3">
                   <label className="form-label fw-bold">
                     <i className="bi bi-people me-2"></i>
                     Diễn viên
@@ -320,6 +367,71 @@ const EditMovie = () => {
                     placeholder="Diễn viên 1, Diễn viên 2, Diễn viên 3"
                   />
                   <small className="text-muted">Phân cách bằng dấu phẩy</small>
+                </div>
+
+                {/* YouTube URL */}
+                <div className="mb-3">
+                  <label className="form-label fw-bold">
+                    <i className="bi bi-youtube me-2"></i>
+                    Link YouTube *
+                  </label>
+                  <input
+                    type="url"
+                    className="form-control"
+                    name="youtubeUrl"
+                    value={formData.youtubeUrl}
+                    onChange={handleInputChange}
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    required
+                  />
+                  <small className="text-muted">Link YouTube video</small>
+                </div>
+
+                {/* Thumbnail Options */}
+                <div className="mb-3">
+                  <label className="form-label fw-bold">
+                    <i className="bi bi-image me-2"></i>
+                    Thumbnail
+                  </label>
+                  
+                  {/* Use YouTube Thumbnail Option */}
+                  <div className="form-check mb-2">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      name="useYoutubeThumbnail"
+                      checked={formData.useYoutubeThumbnail}
+                      onChange={handleInputChange}
+                    />
+                    <label className="form-check-label">
+                      Sử dụng thumbnail từ YouTube
+                    </label>
+                  </div>
+
+                  {/* Upload Custom Thumbnail */}
+                  {!formData.useYoutubeThumbnail && (
+                    <div className="mb-2">
+                      <input
+                        type="file"
+                        className="form-control"
+                        accept="image/*"
+                        onChange={handleThumbnailChange}
+                      />
+                      <small className="text-muted">Chọn ảnh thumbnail tùy chỉnh (JPG, PNG, GIF)</small>
+                    </div>
+                  )}
+
+                  {/* Thumbnail Preview */}
+                  {thumbnailPreview && (
+                    <div className="mt-2">
+                      <img 
+                        src={thumbnailPreview} 
+                        alt="Thumbnail preview" 
+                        className="img-thumbnail"
+                        style={{ maxWidth: '200px', maxHeight: '150px' }}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Action Buttons */}

@@ -278,11 +278,55 @@ const updateMovie = async (req, res) => {
       });
     }
 
+    // Lưu thông tin cũ để so sánh
+    const oldData = {
+      title: movie.title,
+      description: movie.description,
+      youtubeUrl: movie.youtubeUrl,
+      thumbnail: movie.thumbnail,
+      category: movie.category
+    };
+
     // Cập nhật phim
     Object.assign(movie, req.body);
-    await movie.save();
 
-    // Populate thông tin uploader
+    // Nếu có thay đổi YouTube URL, cập nhật youtubeId
+    if (req.body.youtubeUrl && req.body.youtubeUrl !== oldData.youtubeUrl) {
+      // Extract YouTube ID từ URL
+      const youtubeIdMatch = req.body.youtubeUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
+      if (youtubeIdMatch) {
+        movie.youtubeId = youtubeIdMatch[1];
+        
+        // Nếu sử dụng YouTube thumbnail, cập nhật thumbnail
+        if (req.body.useYoutubeThumbnail !== false) {
+          movie.thumbnail = `https://img.youtube.com/vi/${movie.youtubeId}/maxresdefault.jpg`;
+        }
+      }
+    }
+
+    // Xử lý thumbnail upload (nếu có)
+    if (req.file) {
+      // TODO: Implement file upload logic
+      // movie.thumbnail = uploadedFileUrl;
+    }
+
+    // Thêm vào edit history
+    const changes = [];
+    if (req.body.title !== oldData.title) changes.push(`Tiêu đề: "${oldData.title}" → "${req.body.title}"`);
+    if (req.body.description !== oldData.description) changes.push('Mô tả đã được cập nhật');
+    if (req.body.youtubeUrl !== oldData.youtubeUrl) changes.push('Link YouTube đã được cập nhật');
+    if (req.body.thumbnail !== oldData.thumbnail) changes.push('Thumbnail đã được cập nhật');
+    if (req.body.category !== oldData.category) changes.push(`Thể loại: "${oldData.category}" → "${req.body.category}"`);
+
+    if (changes.length > 0) {
+      movie.editHistory.push({
+        editedBy: req.user.id,
+        editedAt: new Date(),
+        changes: changes.join(', ')
+      });
+    }
+
+    await movie.save();
     await movie.populate('uploadedBy', 'username avatar');
 
     res.json({
